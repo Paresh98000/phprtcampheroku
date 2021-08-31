@@ -1,0 +1,67 @@
+<html>
+                <head>
+                    <title>
+                        Admin
+                    </title>
+                    <script>
+
+                    var var1 = 0;
+                    
+                    function startWork(){
+                        isadmin = document.getElementById("isadmin");
+                        if(isadmin!=null){
+                            interval = 5*60*1000;
+                            startDt = new Date();
+                            militime = 1000;
+                            var1 = setInterval(getTime, militime);
+                        }
+                        else{
+                            dom = document.getElementById("time");
+                            dom.innerHTML = "Please enter correct username & password";
+                        }
+                    }
+  
+                    function getTime(){
+                        var dom = document.getElementById("time");
+                        dt = new Date();
+                        milidiff = dt.getTime() - startDt.getTime();
+                        seconddiff = (interval - milidiff)/1000;
+                        minutes = parseInt(seconddiff/60);
+                        extrasecs = parseInt(seconddiff - (minutes*60));
+                        flag = "";
+                        if(extrasecs<10) flag = "0";
+                        dom.innerHTML = "Next Mail Sent in :- "+minutes+" : "+flag+extrasecs+" ";
+                        if(milidiff>interval){
+                            sendMails();
+                            startDt = new Date();
+                        }
+                    }
+
+                    function sendMails(){
+                        const Http = new XMLHttpRequest();
+                        const url='http://pareshphp.ddns.net/sendMail.php';
+                        Http.open("GET", url);
+                        Http.send();
+                        Http.onreadystatechange=(e)=>{
+                        if(Http.status==200){console.log(Http.responseText);}
+                        else{console.log(Http.status + " " + Http.statusText);}
+                        }
+                    }
+                      
+                    function stop() {  
+                    clearInterval(var1);  
+                    }                      
+                    </script>
+                </head>
+                <body>
+                    <h1 >Admin Panel</h1>
+                    <Button onclick="startWork();">Start</Button>
+                    <Button onclick="stop();">Stop</Button>
+                    <h5 id="time"></h5>
+                    <form method='post'>
+                    <label for='username'> Username </label> <input type='text' name='username'/>
+                    <label for='password'> Password </label> <input type='text' name= 'password'/>
+                    <input type='submit' name='submit' value='Submit'/>
+                    </form>
+                </body>
+             </html>
